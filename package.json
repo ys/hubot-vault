@@ -18,7 +18,7 @@
   ],
   "homepage": "https://github.com/ys/hubot-vault",
   "scripts": {
-    "test": "NODE_ENV=test ./node_modules/.bin/mocha test/**/*_test.coffee"
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha"
   },
   "contributors": [
     {
