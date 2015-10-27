@@ -38,7 +38,8 @@
     "hubot-mock-adapter": "1.0.0"
   },
   "engines": {
-    "node": ">=0.8.0"
+    "node": "~0.12.0",
+    "npm": ">=2.12.0"
   },
   "bugs": {
     "url": "https://github.com/ys/hubot-vault/issues"
