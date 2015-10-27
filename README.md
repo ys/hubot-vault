@@ -3,7 +3,7 @@
 ## Installation
 
 * Add hubot-vault to your `package.json` file.
-* Set `HUBOT_FERNET_SECRET` to `dd if=/dev/urandom bs=32 count=1 2>/dev/null | openssl base64`
+* Set `HUBOT_FERNET_SECRETS` to `dd if=/dev/urandom bs=32 count=1 2>/dev/null | openssl base64`
 
 ## Usage
 
@@ -12,6 +12,14 @@ vault = robot.vault.forUser(user)
 vault.set("secret_token", "secret_value")
 vault.get("secret_token") # => "secret_value"
 vault.unset("secret_token")
+```
+
+## Keys Rotation
+
+Just prepend the `HUBOT_FERNET_SECRETS` with the next key
+
+```
+HUBOT_FERNET_SECRETS=new_key,old_keys
 ```
 
 ## See Also

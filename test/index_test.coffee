@@ -11,7 +11,7 @@ describe 'Vault', ->
     robot.adapter.on 'connected', ->
 
       process.env.HUBOT_DEPLOY_RANDOM_REPLY = 'sup-dude'
-      process.env.HUBOT_FERNET_SECRET = 'HTGbOk8U268J1reVKd3USe9brjsKguT8Bn1D83PSyGQ='
+      process.env.HUBOT_FERNET_SECRETS = 'HTGbOk8U268J1reVKd3USe9brjsKguT8Bn1D83PSyGQ='
 
       require('../index') robot
 
@@ -56,3 +56,27 @@ describe 'Vault', ->
     assert.property vault.vault, 'LOL'
     vault.unset 'LOL'
     assert.notProperty vault.vault, 'LOL'
+
+  it 'supports multiple secrets', ->
+    vault = robot.vault.forUser(user)
+    vault.set 'LOL', 'TRUE'
+    process.env.HUBOT_FERNET_SECRETS = '09E5+pgDBnL7sWDQ+GsQpEWpp8869hTC6r1a361V5i8=,HTGbOk8U268J1reVKd3USe9brjsKguT8Bn1D83PSyGQ='
+    vault = robot.vault.forUser(user)
+    assert.equal vault.get('LOL'), 'TRUE'
+
+  it 'is null when none of the secrets match the one encoded with', ->
+    vault = robot.vault.forUser(user)
+    vault.set 'LOL', 'TRUE'
+    process.env.HUBOT_FERNET_SECRETS = '+yFKliFBGgxlf1nHov8h6HkC/qc/7S02G6wleFu2etI='
+    vault = robot.vault.forUser(user)
+    assert.isNull vault.get('LOL')
+
+  it 'raises when no secrets', ->
+    process.env.HUBOT_FERNET_SECRETS = ''
+    vault = robot.vault.forUser(user)
+    assert.throws (-> vault.set('LOL', 'TRUE')), /Secret must be 32 url-safe base64-encoded bytes./
+
+  it 'raises when wrongly formatted secrets', ->
+    process.env.HUBOT_FERNET_SECRETS = 'lol'
+    vault = robot.vault.forUser(user)
+    assert.throws (-> vault.set('LOL', 'TRUE')), /Secret must be 32 url-safe base64-encoded bytes./

@@ -8,22 +8,31 @@ class Vault
     @vault = @store[@user.id]
 
   set: (key, value) ->
-    token = new fernet.Token(secret: @secret())
+    token = new fernet.Token(secret: @currentSecret())
     @vault[key] = token.encode(JSON.stringify(value))
 
   get: (key) ->
     return unless @vault[key]
-    token = new fernet.Token
-      secret: @secret()
-      token: @vault[key]
-      ttl: 0
-    JSON.parse(token.decode())
+    value = null
+    for secret in @secrets()
+      token = new fernet.Token
+        secret: secret
+        token: @vault[key]
+        ttl: 0
+      try
+        value = JSON.parse(token.decode())
+      catch error
+        continue
+    value
 
   unset: (key) ->
     delete @vault[key]
 
-  secret: ->
-    new fernet.Secret(process.env.HUBOT_FERNET_SECRET)
+  currentSecret: ->
+    @secrets()[0]
+
+  secrets: ->
+    (new fernet.Secret(secret) for secret in process.env.HUBOT_FERNET_SECRETS.split(","))
 
 module.exports = (robot) ->
   robot.vault =
