@@ -64,12 +64,12 @@ describe 'Vault', ->
     vault = robot.vault.forUser(user)
     assert.equal vault.get('LOL'), 'TRUE'
 
-  it 'is null when none of the secrets match the one encoded with', ->
+  it 'is undefined when none of the secrets match the one encoded with', ->
     vault = robot.vault.forUser(user)
     vault.set 'LOL', 'TRUE'
     process.env.HUBOT_FERNET_SECRETS = '+yFKliFBGgxlf1nHov8h6HkC/qc/7S02G6wleFu2etI='
     vault = robot.vault.forUser(user)
-    assert.isNull vault.get('LOL')
+    assert.isUndefined vault.get('LOL')
 
   it 'raises when no secrets', ->
     process.env.HUBOT_FERNET_SECRETS = ''
