@@ -7,7 +7,7 @@
 
 ## Usage
 
-```
+``` javascript
 vault = robot.vault.forUser(user)
 vault.set("secret_token", "secret_value")
 vault.get("secret_token") # => "secret_value"
